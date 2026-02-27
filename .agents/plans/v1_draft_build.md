@@ -16,6 +16,22 @@ POC is validated by friends. Goal: scaffold the real project and get a working d
 - Deliver a playable local draft (`npm run dev`), not deployment.
 - GitHub Pages deployment is deferred to the next phase.
 
+## Implementation Status (2026-02-27)
+- Phase 1 to Phase 6 are implemented and locally playable.
+- Test/build are green: `npm test` and `npm run build`.
+- Swipe behavior shipped: `right = keep`, `left = memorized/drop`.
+- Deck behavior shipped:
+  - If `Hide memorized` is ON (default), memorized cards leave active draw.
+  - If `Hide memorized` is OFF, memorized cards stay in draw and deck can loop.
+- UI updates shipped:
+  - Flat Material-like style (no 3D/glass look).
+  - Card-first layout with minimized floating controls.
+  - Card back simplified; optional metadata is compact (`romaji / zh / cat`).
+- Visual polish pass (2026-02-27):
+  - Card back: content vertically centered as a group (`flex-1 flex-col items-center justify-center gap-6`) instead of `justify-between`.
+  - Text hierarchy improved: secondary text (hiragana, translation) lighter color/weight.
+  - Action buttons: changed from small circles to equal-width pill-shaped buttons with labels ("Memorized" / "Keep"), spanning full card width with `flex-1`.
+
 ## Directory Layout
 ```
 meet_vocab/
@@ -92,12 +108,13 @@ Port the POC's rendering and gesture logic into proper components:
 
 **`src/components/Card.tsx`**
 - Props: `card: VocabCard`, `flipped: boolean`, `isMemorized: boolean`, `frontMode: 'jp' | 'en'`.
-- Renders front or back face. Back shows optional fields only if present.
+- Renders front or back face.
+- Back shows required fields plus compact optional metadata when present (`romaji / zh / cat`).
 
 **`src/components/SwipeDeck.tsx`**
 - Wraps current card in `motion.div` with drag-x.
 - Handles drag direction state, threshold detection, exit animation.
-- Swipe semantics: right swipe marks memorized, left swipe advances without memorizing.
+- Swipe semantics: right swipe keeps card (advance), left swipe marks memorized (drop).
 - Renders next-card preview behind.
 
 **`src/components/Sheet.tsx`, `ProgressBar.tsx`, `Pill.tsx`**
@@ -106,7 +123,8 @@ Port the POC's rendering and gesture logic into proper components:
 **`src/screens/DeckScreen.tsx`**
 - Composes SwipeDeck + Sheet + end-of-deck.
 - Manages deck state via `lib/deck.ts` + `lib/storage.ts`.
-- Options sheet: hide-memorized toggle, progress, re-shuffle, reset memorized, restart, **front mode toggle (jp/en)**, "Import new deck" button (at bottom).
+- Deck-first layout: card is primary, controls/progress are minimized as floating UI.
+- Options sheet: hide-memorized toggle (default ON), **front mode toggle (jp/en)**, re-shuffle, reset memorized, restart, and "Import new deck".
 
 ### Phase 4 — Import Screen
 **`src/screens/ImportScreen.tsx`**
@@ -133,6 +151,7 @@ Port the POC's rendering and gesture logic into proper components:
 ### Phase 6 — Polish & Verify
 - Responsive check: test at phone (375px), tablet (768px), desktop (1024px+).
 - Touch swipe on mobile, mouse drag on desktop.
+- Styling pass: moved from prototype styling to flat Material-like styling.
 - Run `npm test` — all pass.
 - Run `npm run build` — no errors.
 - Manual smoke test via `npm run dev`.
@@ -140,16 +159,15 @@ Port the POC's rendering and gesture logic into proper components:
 ## Deferred (not in this draft)
 - GitHub Pages deployment config.
 - Fullscreen toggle (from POC).
-- `romaji` display logic on card back (show if present).
 - Landing page (per `landing_page_spec.md` — optional for v1).
 - PWA / offline support.
 
 ## Verification
 1. `npm run dev` → opens import screen.
 2. Paste a valid CSV → swipe deck appears.
-3. Swipe right marks memorized, swipe left skips; state persists on refresh.
-4. Options sheet works: hide memorized, re-shuffle, reset, front mode toggle.
-5. End-of-deck → restart/shuffle/reset buttons work.
+3. Swipe right keeps, swipe left memorizes/drops; state persists on refresh.
+4. Options sheet works: hide memorized (default ON), re-shuffle, reset, front mode toggle.
+5. End-of-deck appears when no active cards remain (with hide ON) and restart/shuffle/reset buttons work.
 6. Import new deck from options → confirm modal → import screen.
 7. `npm test` → all tests pass.
 8. `npm run build` → clean production build.
