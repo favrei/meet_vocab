@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import type { FrontMode, VocabCard } from '../types'
 import Card from './Card'
@@ -16,6 +16,9 @@ type SwipeDeckProps = {
 }
 
 const SWIPE_THRESHOLD = 110
+const TAP_MAX_MOVEMENT = 10
+const TAP_MAX_DURATION_MS = 260
+const FLIP_LOCK_MS = 220
 
 export default function SwipeDeck({
   currentCard,
@@ -28,6 +31,16 @@ export default function SwipeDeck({
 }: SwipeDeckProps) {
   const [dragX, setDragX] = useState(0)
   const [swiping, setSwiping] = useState(false)
+  const pointerStartRef = useRef<{ x: number; y: number; at: number } | null>(null)
+  const movedRef = useRef(false)
+  const flipLockedUntilRef = useRef(0)
+
+  useEffect(() => {
+    flipLockedUntilRef.current = Date.now() + FLIP_LOCK_MS
+    movedRef.current = false
+    pointerStartRef.current = null
+    setDragX(0)
+  }, [currentCard?.id])
 
   const swipeHint = useMemo(() => {
     if (dragX > 24) {
@@ -70,10 +83,40 @@ export default function SwipeDeck({
             drag="x"
             dragElastic={0.16}
             dragConstraints={{ left: 0, right: 0 }}
-            onTap={onFlip}
+            onPointerDown={(event) => {
+              pointerStartRef.current = { x: event.clientX, y: event.clientY, at: Date.now() }
+              movedRef.current = false
+            }}
+            onPointerUp={(event) => {
+              const start = pointerStartRef.current
+              pointerStartRef.current = null
+
+              if (!start || swiping) {
+                return
+              }
+
+              if (Date.now() < flipLockedUntilRef.current) {
+                return
+              }
+
+              const elapsed = Date.now() - start.at
+              const movedX = Math.abs(event.clientX - start.x)
+              const movedY = Math.abs(event.clientY - start.y)
+              if (movedRef.current || elapsed > TAP_MAX_DURATION_MS || movedX > TAP_MAX_MOVEMENT || movedY > TAP_MAX_MOVEMENT) {
+                return
+              }
+
+              onFlip()
+            }}
+            onDragStart={() => {
+              movedRef.current = true
+            }}
             onDrag={(event, info) => {
               event.preventDefault()
               setDragX(info.offset.x)
+              if (Math.abs(info.offset.x) > TAP_MAX_MOVEMENT) {
+                movedRef.current = true
+              }
             }}
             onDragEnd={(event, info) => {
               event.preventDefault()
@@ -83,13 +126,16 @@ export default function SwipeDeck({
 
               if (info.offset.x > SWIPE_THRESHOLD) {
                 setSwiping(true)
+                flipLockedUntilRef.current = Date.now() + FLIP_LOCK_MS
                 onSwipe('right')
               } else if (info.offset.x < -SWIPE_THRESHOLD) {
                 setSwiping(true)
+                flipLockedUntilRef.current = Date.now() + FLIP_LOCK_MS
                 onSwipe('left')
               }
 
               setDragX(0)
+              pointerStartRef.current = null
             }}
             onAnimationComplete={() => {
               setSwiping(false)
