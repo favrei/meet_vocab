@@ -9,7 +9,8 @@
 - Added hosting notes to `README.md`.
 - Verified locally: `npm test` (15 pass), `npm run build` success.
 - First Actions run failed because Pages site was not enabled yet; patched workflow with `enablement: true`.
-- Remaining: push fix to `main`, confirm successful deploy run, verify live URL.
+- Second Actions run also failed because workflow token lacks permission to create initial Pages site.
+- Remaining: manually enable Pages in repo settings, rerun deploy, verify live URL.
 
 ## Recently Applied
 - Rebalanced card back layout: content (meaning, pronunciation, example, tags) grouped as a single vertically-centered cluster instead of spread with `justify-between`.

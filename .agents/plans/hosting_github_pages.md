@@ -40,10 +40,19 @@ Deploy `meet_vocab` to GitHub Pages from this same repo, with automatic deploy o
   - Added hosting section with repo, URL, and deploy mechanism.
 
 ## Remaining Manual Steps
-1. Commit and push current changes to `main`.
-2. In GitHub repo settings, set Pages source to `GitHub Actions` (if not auto-set).
+1. In GitHub repo settings, enable Pages and set source to `GitHub Actions`.
+2. Re-run or re-trigger the deploy workflow after Pages is enabled.
 3. Confirm deployment job succeeds and URL loads:
    - `https://favrei.github.io/meet_vocab/`
+
+## Current Blocker (2026-02-27)
+- Workflow runs `#1` and `#2` failed at `Configure GitHub Pages` before build steps.
+- Root cause: Actions token cannot create initial Pages site (`Create Pages site failed: Resource not accessible by integration`).
+- Evidence:
+  - Run #1: `https://github.com/favrei/meet_vocab/actions/runs/22468686356`
+  - Run #2: `https://github.com/favrei/meet_vocab/actions/runs/22468715398`
+- API check for Pages site currently returns `404 Not Found`:
+  - `GET https://api.github.com/repos/favrei/meet_vocab/pages`
 
 ## Acceptance Criteria
 - Pages workflow runs successfully on `main`.
