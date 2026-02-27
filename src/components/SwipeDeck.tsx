@@ -61,14 +61,16 @@ export default function SwipeDeck({
   }
 
   return (
-    <div className="relative mx-auto w-full max-w-[30rem] pt-8 sm:pt-10">
-      {swipeHint ? (
-        <div
-          className={`pointer-events-none absolute left-1/2 top-0 z-30 -translate-x-1/2 rounded-full border px-3 py-1 text-xs font-semibold tracking-[0.16em] ${swipeHint.tone}`}
-        >
-          {swipeHint.label}
-        </div>
-      ) : null}
+    <div className="mx-auto w-full max-w-[30rem]">
+      <div className="mb-2 flex h-7 items-center justify-center sm:mb-3">
+        {swipeHint ? (
+          <div
+            className={`pointer-events-none rounded-full border px-3 py-1 text-xs font-semibold tracking-[0.16em] ${swipeHint.tone}`}
+          >
+            {swipeHint.label}
+          </div>
+        ) : null}
+      </div>
 
       <div className="relative isolate h-[min(60svh,32rem)] min-h-[22rem] sm:h-[min(72vh,40rem)] sm:min-h-[30rem]">
         {nextCard ? (
