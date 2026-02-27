@@ -87,7 +87,13 @@ export default function SwipeDeck({
           </div>
         ) : null}
 
-        <AnimatePresence initial={false} mode="wait">
+        <AnimatePresence
+          initial={false}
+          mode="wait"
+          onExitComplete={() => {
+            setSwiping(false)
+          }}
+        >
           <motion.div
             key={currentCard.id}
             drag="x"
@@ -148,9 +154,6 @@ export default function SwipeDeck({
 
               setDragX(0)
               pointerStartRef.current = null
-            }}
-            onAnimationComplete={() => {
-              setSwiping(false)
             }}
             initial={{ opacity: 0, scale: 0.98, y: 6 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
