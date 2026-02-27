@@ -65,15 +65,31 @@ describe('parseCSV', () => {
     expect(result.errors[0]?.message).toContain('duplicate id: 1')
   })
 
+  it('parses csv with only required headers (optional columns omitted)', () => {
+    const csv = ['id,jp,hira,en,example,translation', '1,水,みず,water,水を飲みます。,I drink water.'].join('\n')
+
+    const result = parseCSV(csv)
+
+    expect(result.errors).toHaveLength(0)
+    expect(result.cards).toHaveLength(1)
+    expect(result.cards[0]).toMatchObject({
+      id: '1',
+      jp: '水',
+      hira: 'みず',
+      en: 'water',
+    })
+    expect(result.cards[0]?.romaji).toBeUndefined()
+    expect(result.cards[0]?.zh).toBeUndefined()
+    expect(result.cards[0]?.cat).toBeUndefined()
+  })
+
   it('fails when required headers are missing', () => {
-    const csv = ['id,jp,hira,en,example,translation,romaji,cat', '1,水,みず,water,水を飲みます。,I drink water.,mizu,noun'].join(
-      '\n',
-    )
+    const csv = ['id,jp,hira,example,translation', '1,水,みず,水を飲みます。,I drink water.'].join('\n')
 
     const result = parseCSV(csv)
 
     expect(result.cards).toHaveLength(0)
     expect(result.errors[0]).toMatchObject({ row: 1 })
-    expect(result.errors[0]?.message).toContain('Missing header: zh')
+    expect(result.errors[0]?.message).toContain('Missing header: en')
   })
 })

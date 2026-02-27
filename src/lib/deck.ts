@@ -7,6 +7,10 @@ export type DeckState = {
   hideMemorized: boolean
 }
 
+export function generateSeed() {
+  return Math.floor(Date.now() % 2147483647)
+}
+
 export function mulberry32(seed: number): () => number {
   let t = seed >>> 0
   return () => {

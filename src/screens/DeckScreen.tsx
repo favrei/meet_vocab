@@ -8,6 +8,7 @@ import {
   advance,
   clampCursor,
   createInitialDeckState,
+  generateSeed,
   markMemorized,
   resetMemorized,
   reshuffle,
@@ -21,10 +22,6 @@ import type { FrontMode, VocabCard } from '../types'
 type DeckScreenProps = {
   cards: VocabCard[]
   onImportNewDeck: () => void
-}
-
-function generateSeed() {
-  return Math.floor(Date.now() % 2147483647)
 }
 
 export default function DeckScreen({ cards, onImportNewDeck }: DeckScreenProps) {
@@ -51,6 +48,12 @@ export default function DeckScreen({ cards, onImportNewDeck }: DeckScreenProps) 
     saveFrontMode(frontMode)
   }, [frontMode])
 
+  const applyDeckAction = (transform: (state: DeckState) => DeckState, closeSheet?: boolean) => {
+    setFlipped(false)
+    setDeckState(transform)
+    if (closeSheet) setSheetOpen(false)
+  }
+
   const orderedCards = useMemo(() => activeOrder(cards, deckState), [cards, deckState])
   const done = orderedCards.length === 0
   const currentCard = !done ? orderedCards[deckState.cursor] ?? null : null
@@ -58,9 +61,7 @@ export default function DeckScreen({ cards, onImportNewDeck }: DeckScreenProps) 
   const memorizedCount = deckState.memorized.size
 
   const handleSwipe = (direction: 'left' | 'right') => {
-    setFlipped(false)
-
-    setDeckState((previous) => {
+    applyDeckAction((previous) => {
       const active = activeOrder(cards, previous)
       const visibleCard = active[previous.cursor]
       if (!visibleCard) {
@@ -138,28 +139,13 @@ export default function DeckScreen({ cards, onImportNewDeck }: DeckScreenProps) 
             <h2 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900">No cards left in active deck</h2>
             <p className="mt-3 text-sm text-slate-600">All cards are memorized. Restart, reset, or import a new deck.</p>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
-              <Pill
-                onClick={() => {
-                  setFlipped(false)
-                  setDeckState((state) => restartSameOrder(state, cards))
-                }}
-              >
+              <Pill onClick={() => applyDeckAction((state) => restartSameOrder(state, cards))}>
                 Restart
               </Pill>
-              <Pill
-                onClick={() => {
-                  setFlipped(false)
-                  setDeckState((state) => reshuffle(state, generateSeed()))
-                }}
-              >
+              <Pill onClick={() => applyDeckAction((state) => reshuffle(state, generateSeed()))}>
                 Re-shuffle
               </Pill>
-              <Pill
-                onClick={() => {
-                  setFlipped(false)
-                  setDeckState((state) => resetMemorized(state))
-                }}
-              >
+              <Pill onClick={() => applyDeckAction((state) => resetMemorized(state))}>
                 Reset memorized
               </Pill>
             </div>
@@ -201,31 +187,13 @@ export default function DeckScreen({ cards, onImportNewDeck }: DeckScreenProps) 
         </div>
 
         <div className="flex flex-wrap gap-2">
-          <Pill
-            onClick={() => {
-              setFlipped(false)
-              setDeckState((state) => reshuffle(state, generateSeed()))
-              setSheetOpen(false)
-            }}
-          >
+          <Pill onClick={() => applyDeckAction((state) => reshuffle(state, generateSeed()), true)}>
             Re-shuffle
           </Pill>
-          <Pill
-            onClick={() => {
-              setFlipped(false)
-              setDeckState((state) => resetMemorized(state))
-              setSheetOpen(false)
-            }}
-          >
+          <Pill onClick={() => applyDeckAction((state) => resetMemorized(state), true)}>
             Reset memorized
           </Pill>
-          <Pill
-            onClick={() => {
-              setFlipped(false)
-              setDeckState((state) => restartSameOrder(state, cards))
-              setSheetOpen(false)
-            }}
-          >
+          <Pill onClick={() => applyDeckAction((state) => restartSameOrder(state, cards), true)}>
             Restart
           </Pill>
         </div>

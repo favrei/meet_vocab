@@ -110,7 +110,7 @@ export function parseCSV(raw: string): { cards: VocabCard[]; errors: RowError[] 
     seenHeaders.add(column)
   }
 
-  for (const required of ALL_HEADERS) {
+  for (const required of REQUIRED_HEADERS) {
     if (!seenHeaders.has(required)) {
       errors.push(toError(1, `Missing header: ${required}`))
     }

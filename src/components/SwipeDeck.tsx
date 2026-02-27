@@ -35,6 +35,7 @@ export default function SwipeDeck({
   const pointerStartRef = useRef<{ x: number; y: number; at: number } | null>(null)
   const movedRef = useRef(false)
   const flipLockedUntilRef = useRef(0)
+  const didSwipeRef = useRef(false)
 
   useEffect(() => {
     if (!swiping) {
@@ -76,9 +77,19 @@ export default function SwipeDeck({
     <div className="mx-auto w-full max-w-[30rem]">
       <div className="relative isolate h-[min(60svh,32rem)] min-h-[22rem] sm:h-[min(72vh,40rem)] sm:min-h-[30rem]">
         {backdropCard ? (
-          <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 translate-y-2 opacity-75">
+          <motion.div
+            key={backdropCard.id}
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 z-0"
+            initial={{ y: 8, opacity: 0.75 }}
+            animate={{
+              y: swiping ? 0 : 8,
+              opacity: swiping ? 1 : 0.75,
+            }}
+            transition={{ duration: 0.16, ease: 'easeOut' }}
+          >
             <Card card={backdropCard} flipped={false} isMemorized={false} frontMode={frontMode} />
-          </div>
+          </motion.div>
         ) : null}
 
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-20">
@@ -100,6 +111,7 @@ export default function SwipeDeck({
           initial={false}
           mode="wait"
           onExitComplete={() => {
+            didSwipeRef.current = swiping
             setSwiping(false)
           }}
         >
@@ -164,7 +176,7 @@ export default function SwipeDeck({
               setDragX(0)
               pointerStartRef.current = null
             }}
-            initial={{ opacity: 0, scale: 0.98, y: 6 }}
+            initial={didSwipeRef.current ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.98, y: 6 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, x: dragX >= 0 ? 220 : -220 }}
             transition={{ duration: 0.16 }}

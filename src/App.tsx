@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import ImportScreen from './screens/ImportScreen'
 import DeckScreen from './screens/DeckScreen'
 import { loadDeck } from './lib/storage'
@@ -23,7 +23,7 @@ export default function App() {
     }
   })
 
-  const hasDeck = useMemo(() => Boolean(cards && cards.length > 0), [cards])
+  const hasDeck = (cards?.length ?? 0) > 0
 
   if (screen === 'deck' && hasDeck && cards) {
     return (

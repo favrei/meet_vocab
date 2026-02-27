@@ -1,7 +1,8 @@
 import { useMemo, useRef, useState, type ChangeEvent } from 'react'
 import ConfirmModal from '../components/ConfirmModal'
+import PromptGenerator from '../components/PromptGenerator'
 import { parseCSV } from '../lib/csv'
-import { createInitialDeckState } from '../lib/deck'
+import { createInitialDeckState, generateSeed } from '../lib/deck'
 import { saveDeck, saveDeckState, saveFrontMode } from '../lib/storage'
 import type { VocabCard } from '../types'
 
@@ -10,29 +11,6 @@ type ImportScreenProps = {
   onImportSuccess: (cards: VocabCard[]) => void
 }
 
-const PROMPT_TEMPLATE = `Generate a Japanese vocabulary CSV for language learning.
-
-Output ONLY raw CSV — no markdown fences, no explanation, no commentary.
-
-Header (recommended order):
-id,jp,hira,en,example,translation,romaji,zh,cat
-
-Column definitions:
-- id: unique integer starting from 1
-- jp: Japanese word in standard form (kanji where appropriate)
-- hira: full hiragana reading
-- en: English meaning
-- example: example sentence in Japanese using the word
-- translation: English translation of the example sentence
-- romaji: romanized pronunciation (optional, may be empty)
-- zh: Chinese meaning (optional, may be empty)
-- cat: category like "noun", "verb", "adjective" (optional, may be empty)
-
-Rules:
-- Use standard CSV quoting if a field contains commas.
-- Every row must have id, jp, hira, en, example, and translation filled.
-- Generate [NUMBER] words about [TOPIC].`
-
 const EXAMPLE_CSV = `id,jp,hira,en,example,translation,romaji,zh,cat
 1,猫,ねこ,cat,猫が好きです,I like cats,neko,猫,noun
 2,犬,いぬ,dog,犬と散歩します,I walk with my dog,inu,狗,noun
@@ -40,26 +18,15 @@ const EXAMPLE_CSV = `id,jp,hira,en,example,translation,romaji,zh,cat
 4,魚,さかな,fish,魚を食べました,I ate fish,sakana,鱼,noun
 5,馬,うま,horse,馬に乗りたいです,I want to ride a horse,uma,马,noun`
 
-function generateSeed() {
-  return Math.floor(Date.now() % 2147483647)
-}
-
 export default function ImportScreen({ existingDeck, onImportSuccess }: ImportScreenProps) {
   const importSectionRef = useRef<HTMLElement | null>(null)
   const [rawInput, setRawInput] = useState('')
   const [errors, setErrors] = useState<{ row: number; message: string }[]>([])
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [pendingCards, setPendingCards] = useState<VocabCard[] | null>(null)
-  const [copyStatus, setCopyStatus] = useState<'idle' | 'copied' | 'failed'>('idle')
-  const [numberValue, setNumberValue] = useState('30')
-  const [topicValue, setTopicValue] = useState('daily conversation')
-
-  const promptText = useMemo(() => {
-    return PROMPT_TEMPLATE.replace('[NUMBER]', numberValue || '[NUMBER]').replace('[TOPIC]', topicValue || '[TOPIC]')
-  }, [numberValue, topicValue])
 
   const groupedErrors = useMemo(() => {
-    const headerRegex = /header|missing header|unknown header|duplicate header/i
+    const headerRegex = /header/i
     return errors.reduce(
       (acc, item) => {
         if (headerRegex.test(item.message)) {
@@ -121,15 +88,6 @@ export default function ImportScreen({ existingDeck, onImportSuccess }: ImportSc
     setErrors([])
   }
 
-  const handleCopyPrompt = async () => {
-    try {
-      await navigator.clipboard.writeText(promptText)
-      setCopyStatus('copied')
-    } catch {
-      setCopyStatus('failed')
-    }
-  }
-
   const handleUseExampleCSV = () => {
     setRawInput(EXAMPLE_CSV)
     setErrors([])
@@ -161,7 +119,6 @@ export default function ImportScreen({ existingDeck, onImportSuccess }: ImportSc
             preload="auto"
             playsInline
             src={walkthroughVideoSrc}
-            poster=""
           />
         </div>
         {/* subtle gradient glow behind the video */}
@@ -262,46 +219,7 @@ export default function ImportScreen({ existingDeck, onImportSuccess }: ImportSc
         </div>
       </section>
 
-      {/* ── Prompt generator (collapsed by default) ── */}
-      <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-        <details className="group">
-          <summary className="cursor-pointer text-base font-semibold text-slate-900 group-open:mb-4">
-            Generate a word list with AI
-          </summary>
-
-          <div className="grid gap-3 sm:grid-cols-2">
-            <label className="text-sm text-slate-600">
-              Words
-              <input
-                value={numberValue}
-                onChange={(event) => setNumberValue(event.target.value)}
-                className="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:border-slate-400 focus:ring-1 focus:ring-slate-300"
-              />
-            </label>
-            <label className="text-sm text-slate-600">
-              Topic
-              <input
-                value={topicValue}
-                onChange={(event) => setTopicValue(event.target.value)}
-                className="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:border-slate-400 focus:ring-1 focus:ring-slate-300"
-              />
-            </label>
-          </div>
-
-          <pre className="mt-4 max-h-48 overflow-auto rounded-xl bg-slate-950 p-3 text-xs leading-relaxed text-slate-200">{promptText}</pre>
-          <div className="mt-3 flex items-center gap-3">
-            <button
-              type="button"
-              className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600 transition hover:bg-slate-50"
-              onClick={handleCopyPrompt}
-            >
-              Copy prompt
-            </button>
-            {copyStatus === 'copied' ? <span className="text-sm text-slate-500">Copied</span> : null}
-            {copyStatus === 'failed' ? <span className="text-sm text-rose-600">Copy failed</span> : null}
-          </div>
-        </details>
-      </section>
+      <PromptGenerator />
 
       <ConfirmModal
         open={confirmOpen}
