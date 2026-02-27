@@ -1,5 +1,29 @@
 # Deck Import Landing UX Overhaul Plan
 
+## Implementation Status (2026-02-27)
+
+### Shipped
+- Added hero-first import landing with embedded walkthrough video.
+- Added top CTA strip with sample-first path (`Try with sample deck`) and quick jump to import form (`Import my CSV`).
+- Added trust copy: local-only storage and no account required.
+- Reworked import form hierarchy and visual polish (card sections, spacing, clearer headings).
+- Kept CSV helper flow in-page with collapsible "Generate a word list with AI" section and copy prompt action.
+- Improved error readability by grouping import issues into header vs row errors.
+- Fixed import action control consistency: `Import deck`, `Upload file`, and `Load sample rows` now share unified sizing.
+
+### Follow-up Mobile UX Fixes Completed
+- Deck screen now uses mobile-first responsive sizing (`svh` based) to reduce oversized cards on phones.
+- Card typography and spacing are scaled down on small screens, with larger values restored at `sm+`.
+- Added tap-guard heuristics on swipe cards to prevent accidental flips while dragging on mobile.
+- Moved swipe hint chip (`KEEP` / `MEMORIZED`) into a reserved row above the card so it does not overlap serial labels.
+- Stabilized next-card preview during swipe transitions by freezing prefetched next card until exit animation completion.
+
+### Remaining from this plan
+- Guided 3-step onboarding block is not yet implemented.
+- Copy rewrite for some labels/messages is still partial.
+- Accessibility pass is still pending (focus states + screen reader wording review).
+- Optional visual assets/illustrations beyond video are still open.
+
 ## Why we are doing this
 - First-time users land on a screen that feels technical and cold.
 - The current import view explains mechanics, but does not sell value or reduce anxiety.

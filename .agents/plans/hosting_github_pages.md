@@ -42,10 +42,10 @@ Deploy `meet_vocab` to GitHub Pages from this same repo, with automatic deploy o
 - `README.md`
   - Added hosting section with repo, URL, and deploy mechanism.
 
-## Remaining Manual Steps
-1. In GitHub repo settings, set Pages to `Deploy from a branch`.
-2. Select branch `deploy` and folder `/ (root)`.
-3. Confirm URL loads:
+## Deployment Mode In Use
+1. GitHub Pages source is branch-based manual publish.
+2. Source branch is `deploy`, folder `/ (root)`.
+3. Live URL is active:
    - `https://favrei.github.io/meet_vocab/`
 
 ## Current Blocker (2026-02-27)
@@ -62,6 +62,8 @@ Deploy `meet_vocab` to GitHub Pages from this same repo, with automatic deploy o
   - commit: `b373ffb`
   - files: `index.html`, `assets/*`, `.nojekyll`
 - Source branch remains `main` for app development; `deploy` is publish-only.
+- Branch has continued to be updated from `main` for each production release.
+- Latest verified deploy at time of writing: `deploy` @ `81d24b7` from `main` @ `4f9b57f`.
 
 ## Acceptance Criteria
 - Pages workflow runs successfully on `main`.
