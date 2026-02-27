@@ -8,7 +8,8 @@
 - Set Vite production base path to `/meet_vocab/` in `vite.config.ts`.
 - Added hosting notes to `README.md`.
 - Verified locally: `npm test` (15 pass), `npm run build` success.
-- Remaining: commit/push to `main`, confirm Pages setting, verify live URL.
+- First Actions run failed because Pages site was not enabled yet; patched workflow with `enablement: true`.
+- Remaining: push fix to `main`, confirm successful deploy run, verify live URL.
 
 ## Recently Applied
 - Rebalanced card back layout: content (meaning, pronunciation, example, tags) grouped as a single vertically-centered cluster instead of spread with `justify-between`.

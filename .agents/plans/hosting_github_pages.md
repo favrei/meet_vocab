@@ -27,6 +27,8 @@ Deploy `meet_vocab` to GitHub Pages from this same repo, with automatic deploy o
 - Local verification passed:
   - `npm test` (15/15 passing) ✅
   - `npm run build` (production build success) ✅
+- First workflow run triggered after push (`run #1`) but failed at `Configure GitHub Pages` because Pages site was not initialized yet (`Get Pages site failed: Not Found`) ✅ diagnosed
+- Workflow updated to include `enablement: true` in `actions/configure-pages@v5` to auto-enable Pages on first deploy ✅
 
 ## Changes Applied
 - `.github/workflows/deploy.yml`
