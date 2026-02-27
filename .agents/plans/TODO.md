@@ -14,6 +14,7 @@
 - Remaining: set Pages source to `deploy` branch root and verify live URL.
 
 ## Recently Applied
+- Added "Use Example CSV" button on import screen to auto-fill a valid sample deck and reduce first-use confusion.
 - Rebalanced card back layout: content (meaning, pronunciation, example, tags) grouped as a single vertically-centered cluster instead of spread with `justify-between`.
 - Toned down secondary text (hiragana, translation) to lighter weight/color for clearer hierarchy.
 - Replaced small circular action buttons with equal-width pill-shaped buttons labeled "Memorized" / "Keep".

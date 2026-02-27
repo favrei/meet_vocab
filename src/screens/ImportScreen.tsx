@@ -33,6 +33,13 @@ Rules:
 - Every row must have id, jp, hira, en, example, and translation filled.
 - Generate [NUMBER] words about [TOPIC].`
 
+const EXAMPLE_CSV = `id,jp,hira,en,example,translation,romaji,zh,cat
+1,猫,ねこ,cat,猫が好きです,I like cats,neko,猫,noun
+2,犬,いぬ,dog,犬と散歩します,I walk with my dog,inu,狗,noun
+3,鳥,とり,bird,鳥が空を飛んでいます,A bird is flying in the sky,tori,鸟,noun
+4,魚,さかな,fish,魚を食べました,I ate fish,sakana,鱼,noun
+5,馬,うま,horse,馬に乗りたいです,I want to ride a horse,uma,马,noun`
+
 function generateSeed() {
   return Math.floor(Date.now() % 2147483647)
 }
@@ -101,6 +108,11 @@ export default function ImportScreen({ existingDeck, onImportSuccess }: ImportSc
     }
   }
 
+  const handleUseExampleCSV = () => {
+    setRawInput(EXAMPLE_CSV)
+    setErrors([])
+  }
+
   return (
     <main className="mx-auto min-h-screen w-full max-w-3xl px-4 py-8 sm:px-6">
       <section className="mb-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -127,6 +139,13 @@ export default function ImportScreen({ existingDeck, onImportSuccess }: ImportSc
               Choose CSV file
               <input type="file" accept=".csv,text/csv" className="hidden" onChange={handleFilePick} />
             </label>
+            <button
+              type="button"
+              className="inline-flex items-center justify-center rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
+              onClick={handleUseExampleCSV}
+            >
+              Use Example CSV
+            </button>
             <button
               type="button"
               className="inline-flex items-center justify-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700"

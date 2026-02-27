@@ -1,5 +1,7 @@
 # Meet Vocab
 
+Live site: [https://favrei.github.io/meet_vocab/](https://favrei.github.io/meet_vocab/)
+
 Ask any LLM for Japanese words. Swipe to memorize them.
 
 No account. No backend. Everything stays in your browser.
