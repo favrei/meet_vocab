@@ -10,7 +10,8 @@
 - Verified locally: `npm test` (15 pass), `npm run build` success.
 - First Actions run failed because Pages site was not enabled yet; patched workflow with `enablement: true`.
 - Second Actions run also failed because workflow token lacks permission to create initial Pages site.
-- Remaining: manually enable Pages in repo settings, rerun deploy, verify live URL.
+- Created and pushed manual publish branch `deploy` with static build output.
+- Remaining: set Pages source to `deploy` branch root and verify live URL.
 
 ## Recently Applied
 - Rebalanced card back layout: content (meaning, pronunciation, example, tags) grouped as a single vertically-centered cluster instead of spread with `justify-between`.

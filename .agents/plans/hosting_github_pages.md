@@ -17,7 +17,10 @@ Deploy `meet_vocab` to GitHub Pages from this same repo, with automatic deploy o
 2. Add GitHub Actions workflow to build and deploy Pages.
 3. Set Vite production `base` to `/meet_vocab/`.
 4. Verify local `test` and `build`.
-5. Push to `main`, then validate public URL.
+5. Choose deployment mode:
+   - GitHub Actions workflow mode, or
+   - manual deploy branch mode.
+6. Validate public URL.
 
 ## Status (2026-02-27)
 - `origin` remote configured to `git@github.com:favrei/meet_vocab.git` ✅
@@ -40,9 +43,9 @@ Deploy `meet_vocab` to GitHub Pages from this same repo, with automatic deploy o
   - Added hosting section with repo, URL, and deploy mechanism.
 
 ## Remaining Manual Steps
-1. In GitHub repo settings, enable Pages and set source to `GitHub Actions`.
-2. Re-run or re-trigger the deploy workflow after Pages is enabled.
-3. Confirm deployment job succeeds and URL loads:
+1. In GitHub repo settings, set Pages to `Deploy from a branch`.
+2. Select branch `deploy` and folder `/ (root)`.
+3. Confirm URL loads:
    - `https://favrei.github.io/meet_vocab/`
 
 ## Current Blocker (2026-02-27)
@@ -53,6 +56,12 @@ Deploy `meet_vocab` to GitHub Pages from this same repo, with automatic deploy o
   - Run #2: `https://github.com/favrei/meet_vocab/actions/runs/22468715398`
 - API check for Pages site currently returns `404 Not Found`:
   - `GET https://api.github.com/repos/favrei/meet_vocab/pages`
+
+## Manual Deploy Branch Outcome (2026-02-27)
+- Created and pushed a dedicated `deploy` branch containing static build output at repo root:
+  - commit: `b373ffb`
+  - files: `index.html`, `assets/*`, `.nojekyll`
+- Source branch remains `main` for app development; `deploy` is publish-only.
 
 ## Acceptance Criteria
 - Pages workflow runs successfully on `main`.
