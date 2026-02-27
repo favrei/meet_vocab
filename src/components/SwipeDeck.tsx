@@ -31,9 +31,16 @@ export default function SwipeDeck({
 }: SwipeDeckProps) {
   const [dragX, setDragX] = useState(0)
   const [swiping, setSwiping] = useState(false)
+  const [previewNextCard, setPreviewNextCard] = useState<VocabCard | null>(nextCard)
   const pointerStartRef = useRef<{ x: number; y: number; at: number } | null>(null)
   const movedRef = useRef(false)
   const flipLockedUntilRef = useRef(0)
+
+  useEffect(() => {
+    if (!swiping) {
+      setPreviewNextCard(nextCard)
+    }
+  }, [nextCard, swiping])
 
   useEffect(() => {
     flipLockedUntilRef.current = Date.now() + FLIP_LOCK_MS
@@ -51,6 +58,7 @@ export default function SwipeDeck({
     }
     return null
   }, [dragX])
+  const backdropCard = swiping ? previewNextCard : nextCard
 
   if (!currentCard) {
     return (
@@ -73,9 +81,9 @@ export default function SwipeDeck({
       </div>
 
       <div className="relative isolate h-[min(60svh,32rem)] min-h-[22rem] sm:h-[min(72vh,40rem)] sm:min-h-[30rem]">
-        {nextCard ? (
+        {backdropCard ? (
           <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 translate-y-2 opacity-75">
-            <Card card={nextCard} flipped={false} isMemorized={false} frontMode={frontMode} />
+            <Card card={backdropCard} flipped={false} isMemorized={false} frontMode={frontMode} />
           </div>
         ) : null}
 
@@ -129,10 +137,12 @@ export default function SwipeDeck({
               if (info.offset.x > SWIPE_THRESHOLD) {
                 setSwiping(true)
                 flipLockedUntilRef.current = Date.now() + FLIP_LOCK_MS
+                setPreviewNextCard(nextCard)
                 onSwipe('right')
               } else if (info.offset.x < -SWIPE_THRESHOLD) {
                 setSwiping(true)
                 flipLockedUntilRef.current = Date.now() + FLIP_LOCK_MS
+                setPreviewNextCard(nextCard)
                 onSwipe('left')
               }
 
