@@ -83,8 +83,8 @@ export default function DeckScreen({ cards, onImportNewDeck }: DeckScreenProps) 
   }
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-5xl items-center justify-center px-4 py-6 sm:px-6">
-      <section className="relative w-full">
+    <main className="mx-auto flex min-h-[100svh] w-full max-w-5xl items-start justify-center px-3 py-4 sm:min-h-screen sm:items-center sm:px-6 sm:py-6">
+      <section className="relative w-full pt-1">
         <div className="pointer-events-none absolute left-1/2 top-0 z-20 -translate-x-1/2 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-700 shadow-sm">
           {memorizedCount}/{cards.length}
         </div>
@@ -109,7 +109,7 @@ export default function DeckScreen({ cards, onImportNewDeck }: DeckScreenProps) 
               onSwipe={handleSwipe}
             />
 
-            <div className="mx-auto mt-4 flex w-full max-w-[30rem] items-center gap-3">
+            <div className="mx-auto mt-3 flex w-full max-w-[30rem] items-center gap-2 sm:mt-4 sm:gap-3">
               <button
                 type="button"
                 onClick={() => handleSwipe('left')}

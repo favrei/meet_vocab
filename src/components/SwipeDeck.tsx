@@ -48,7 +48,7 @@ export default function SwipeDeck({
   }
 
   return (
-    <div className="relative mx-auto w-full max-w-[30rem] pt-10">
+    <div className="relative mx-auto w-full max-w-[30rem] pt-8 sm:pt-10">
       {swipeHint ? (
         <div
           className={`pointer-events-none absolute left-1/2 top-0 z-30 -translate-x-1/2 rounded-full border px-3 py-1 text-xs font-semibold tracking-[0.16em] ${swipeHint.tone}`}
@@ -57,7 +57,7 @@ export default function SwipeDeck({
         </div>
       ) : null}
 
-      <div className="relative isolate h-[min(72vh,40rem)] min-h-[30rem]">
+      <div className="relative isolate h-[min(60svh,32rem)] min-h-[22rem] sm:h-[min(72vh,40rem)] sm:min-h-[30rem]">
         {nextCard ? (
           <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 translate-y-2 opacity-75">
             <Card card={nextCard} flipped={false} isMemorized={false} frontMode={frontMode} />
