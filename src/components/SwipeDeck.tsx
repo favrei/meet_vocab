@@ -49,14 +49,18 @@ export default function SwipeDeck({
     setDragX(0)
   }, [currentCard?.id])
 
-  const swipeHint = useMemo(() => {
-    if (dragX > 24) {
-      return { label: 'KEEP', tone: 'text-slate-500 border-slate-200 bg-white' }
+  const keepHintOpacity = useMemo(() => {
+    if (dragX <= 0) {
+      return 0
     }
-    if (dragX < -24) {
-      return { label: 'MEMORIZED', tone: 'text-slate-900 border-slate-300 bg-slate-100' }
+    return Math.min(1, dragX / SWIPE_THRESHOLD)
+  }, [dragX])
+
+  const memorizedHintOpacity = useMemo(() => {
+    if (dragX >= 0) {
+      return 0
     }
-    return null
+    return Math.min(1, Math.abs(dragX) / SWIPE_THRESHOLD)
   }, [dragX])
   const backdropCard = swiping ? previewNextCard : nextCard
 
@@ -70,22 +74,27 @@ export default function SwipeDeck({
 
   return (
     <div className="mx-auto w-full max-w-[30rem]">
-      <div className="mb-2 flex h-7 items-center justify-center sm:mb-3">
-        {swipeHint ? (
-          <div
-            className={`pointer-events-none rounded-full border px-3 py-1 text-xs font-semibold tracking-[0.16em] ${swipeHint.tone}`}
-          >
-            {swipeHint.label}
-          </div>
-        ) : null}
-      </div>
-
       <div className="relative isolate h-[min(60svh,32rem)] min-h-[22rem] sm:h-[min(72vh,40rem)] sm:min-h-[30rem]">
         {backdropCard ? (
           <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 translate-y-2 opacity-75">
             <Card card={backdropCard} flipped={false} isMemorized={false} frontMode={frontMode} />
           </div>
         ) : null}
+
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-20">
+          <div
+            className="absolute left-3 top-[23%] -rotate-12 rounded-lg border border-slate-300 bg-slate-900/90 px-3 py-1.5 text-xs font-semibold tracking-[0.16em] text-white transition-opacity"
+            style={{ opacity: memorizedHintOpacity }}
+          >
+            MEMORIZED
+          </div>
+          <div
+            className="absolute right-3 top-[23%] rotate-12 rounded-lg border border-slate-200 bg-white/95 px-3 py-1.5 text-xs font-semibold tracking-[0.16em] text-slate-700 transition-opacity"
+            style={{ opacity: keepHintOpacity }}
+          >
+            KEEP
+          </div>
+        </div>
 
         <AnimatePresence
           initial={false}
