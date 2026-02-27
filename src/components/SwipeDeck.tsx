@@ -31,10 +31,10 @@ export default function SwipeDeck({
 
   const swipeHint = useMemo(() => {
     if (dragX > 24) {
-      return { label: 'KEEP', tone: 'text-sky-700 border-sky-200 bg-sky-50' }
+      return { label: 'KEEP', tone: 'text-slate-500 border-slate-200 bg-white' }
     }
     if (dragX < -24) {
-      return { label: 'MEMORIZED', tone: 'text-emerald-700 border-emerald-200 bg-emerald-50' }
+      return { label: 'MEMORIZED', tone: 'text-slate-900 border-slate-300 bg-slate-100' }
     }
     return null
   }, [dragX])

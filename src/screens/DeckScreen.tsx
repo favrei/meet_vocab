@@ -115,7 +115,7 @@ export default function DeckScreen({ cards, onImportNewDeck }: DeckScreenProps) 
                 onClick={() => handleSwipe('left')}
                 title="Memorized"
                 aria-label="Memorized"
-                className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 text-sm font-medium text-emerald-700 shadow-sm transition hover:bg-emerald-100"
+                className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-slate-900 text-sm font-medium text-white shadow-sm transition hover:bg-slate-700 active:scale-[0.98]"
               >
                 <Check className="h-4 w-4" />
                 Memorized
@@ -125,7 +125,7 @@ export default function DeckScreen({ cards, onImportNewDeck }: DeckScreenProps) 
                 onClick={() => handleSwipe('right')}
                 title="Keep"
                 aria-label="Keep"
-                className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-xl border border-sky-200 bg-sky-50 text-sm font-medium text-sky-700 shadow-sm transition hover:bg-sky-100"
+                className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white text-sm font-medium text-slate-600 shadow-sm transition hover:bg-slate-50 active:scale-[0.98]"
               >
                 Keep
                 <ArrowRight className="h-4 w-4" />
@@ -237,7 +237,7 @@ export default function DeckScreen({ cards, onImportNewDeck }: DeckScreenProps) 
               setSheetOpen(false)
               onImportNewDeck()
             }}
-            className="w-full rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-sm font-medium text-amber-800 hover:bg-amber-100"
+            className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
           >
             Import new deck
           </button>

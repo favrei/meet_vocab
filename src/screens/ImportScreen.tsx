@@ -1,4 +1,4 @@
-import { useMemo, useState, type ChangeEvent } from 'react'
+import { useMemo, useRef, useState, type ChangeEvent } from 'react'
 import ConfirmModal from '../components/ConfirmModal'
 import { parseCSV } from '../lib/csv'
 import { createInitialDeckState } from '../lib/deck'
@@ -45,6 +45,7 @@ function generateSeed() {
 }
 
 export default function ImportScreen({ existingDeck, onImportSuccess }: ImportScreenProps) {
+  const importSectionRef = useRef<HTMLElement | null>(null)
   const [rawInput, setRawInput] = useState('')
   const [errors, setErrors] = useState<{ row: number; message: string }[]>([])
   const [confirmOpen, setConfirmOpen] = useState(false)
@@ -57,6 +58,23 @@ export default function ImportScreen({ existingDeck, onImportSuccess }: ImportSc
     return PROMPT_TEMPLATE.replace('[NUMBER]', numberValue || '[NUMBER]').replace('[TOPIC]', topicValue || '[TOPIC]')
   }, [numberValue, topicValue])
 
+  const groupedErrors = useMemo(() => {
+    const headerRegex = /header|missing header|unknown header|duplicate header/i
+    return errors.reduce(
+      (acc, item) => {
+        if (headerRegex.test(item.message)) {
+          acc.headerErrors.push(item)
+        } else {
+          acc.rowErrors.push(item)
+        }
+        return acc
+      },
+      { headerErrors: [] as { row: number; message: string }[], rowErrors: [] as { row: number; message: string }[] }
+    )
+  }, [errors])
+
+  const walkthroughVideoSrc = `${import.meta.env.BASE_URL}walkthrough.mp4`
+
   const persistAndContinue = (cards: VocabCard[]) => {
     saveDeck(cards)
     saveDeckState(createInitialDeckState(generateSeed()))
@@ -64,8 +82,8 @@ export default function ImportScreen({ existingDeck, onImportSuccess }: ImportSc
     onImportSuccess(cards)
   }
 
-  const handleImport = () => {
-    const result = parseCSV(rawInput)
+  const parseAndImport = (input: string) => {
+    const result = parseCSV(input)
 
     if (result.errors.length > 0) {
       setErrors(result.errors)
@@ -73,7 +91,7 @@ export default function ImportScreen({ existingDeck, onImportSuccess }: ImportSc
     }
 
     if (result.cards.length === 0) {
-      setErrors([{ row: 1, message: 'No valid data rows found.' }])
+      setErrors([{ row: 1, message: 'We could not find valid rows. Try loading the sample rows to compare format.' }])
       return
     }
 
@@ -86,6 +104,10 @@ export default function ImportScreen({ existingDeck, onImportSuccess }: ImportSc
     }
 
     persistAndContinue(result.cards)
+  }
+
+  const handleImport = () => {
+    parseAndImport(rawInput)
   }
 
   const handleFilePick = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -113,98 +135,172 @@ export default function ImportScreen({ existingDeck, onImportSuccess }: ImportSc
     setErrors([])
   }
 
+  const handleStartWithSampleDeck = () => {
+    setRawInput(EXAMPLE_CSV)
+    parseAndImport(EXAMPLE_CSV)
+  }
+
+  const handleScrollToImport = () => {
+    importSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
   return (
-    <main className="mx-auto min-h-screen w-full max-w-3xl px-4 py-8 sm:px-6">
-      <section className="mb-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-        <h1 className="text-2xl font-semibold text-slate-900">Bring your CSV, swipe words into memory.</h1>
-        <p className="mt-2 text-sm text-slate-600">Paste CSV text or choose a `.csv` file. Import replaces the active deck.</p>
+    <main className="mx-auto min-h-screen w-full max-w-4xl px-4 py-6 sm:px-6">
+      {/* ── Hero: demo video front and center ── */}
+      <section className="relative overflow-hidden rounded-3xl bg-slate-900 shadow-2xl">
+        <div className="relative z-10 px-5 pt-5 pb-1">
+          <p className="text-center text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">Meet Vocab</p>
+        </div>
+        <div className="relative z-10 px-4 pb-5 sm:px-6">
+          <video
+            className="mx-auto mt-3 w-full max-w-3xl rounded-2xl shadow-lg ring-1 ring-white/10"
+            controls
+            autoPlay
+            muted
+            loop
+            preload="auto"
+            playsInline
+            src={walkthroughVideoSrc}
+            poster=""
+          />
+        </div>
+        {/* subtle gradient glow behind the video */}
+        <div
+          className="pointer-events-none absolute inset-0 z-0"
+          style={{
+            background:
+              'radial-gradient(ellipse 60% 50% at 50% 40%, rgba(99,102,241,0.15) 0%, transparent 70%)',
+          }}
+        />
       </section>
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-        <h2 className="text-lg font-semibold text-slate-900">Import deck</h2>
+      {/* ── CTA strip ── */}
+      <section className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+        <button
+          type="button"
+          className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-6 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-slate-700 hover:shadow-lg active:scale-[0.98]"
+          onClick={handleStartWithSampleDeck}
+        >
+          Try with sample deck
+        </button>
+        <button
+          type="button"
+          className="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 hover:shadow-md active:scale-[0.98]"
+          onClick={handleScrollToImport}
+        >
+          Import my CSV
+        </button>
+      </section>
+
+      <p className="mt-3 text-center text-xs text-slate-400">No account needed. Everything stays in your browser.</p>
+
+      {/* ── Import form ── */}
+      <section
+        ref={importSectionRef}
+        className="mt-10 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+      >
+        <h2 className="text-base font-semibold text-slate-900">Import your word list</h2>
         <div className="mt-4 space-y-3">
-          <label className="block text-sm font-medium text-slate-700" htmlFor="csv-paste">
-            Paste CSV
-          </label>
           <textarea
             id="csv-paste"
-            className="h-56 w-full rounded-xl border border-slate-300 p-3 font-mono text-xs text-slate-900 outline-none ring-0 placeholder:text-slate-400 focus:border-slate-500"
+            className="h-44 w-full rounded-xl border border-slate-200 bg-slate-50 p-3 font-mono text-xs text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-400 focus:ring-1 focus:ring-slate-300"
             placeholder="id,jp,hira,en,example,translation,romaji,zh,cat"
             value={rawInput}
             onChange={(event) => setRawInput(event.target.value)}
           />
 
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <label className="inline-flex cursor-pointer items-center justify-center rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">
-              Choose CSV file
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              className="inline-flex items-center justify-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700 active:scale-[0.98]"
+              onClick={handleImport}
+            >
+              Import deck
+            </button>
+            <label className="inline-flex cursor-pointer items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600 transition hover:bg-slate-50">
+              Upload file
               <input type="file" accept=".csv,text/csv" className="hidden" onChange={handleFilePick} />
             </label>
             <button
               type="button"
-              className="inline-flex items-center justify-center rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
+              className="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600 transition hover:bg-slate-50"
               onClick={handleUseExampleCSV}
             >
-              Use Example CSV
-            </button>
-            <button
-              type="button"
-              className="inline-flex items-center justify-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700"
-              onClick={handleImport}
-            >
-              Import Deck
+              Load sample rows
             </button>
           </div>
 
+          <details className="group rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs text-slate-500">
+            <summary className="cursor-pointer font-medium text-slate-600 group-open:mb-2">CSV format reference</summary>
+            <p className="font-mono text-slate-600">id,jp,hira,en,example,translation,romaji,zh,cat</p>
+            <p className="mt-1.5 font-mono text-slate-600">1,猫,ねこ,cat,猫が好きです,I like cats,neko,猫,noun</p>
+          </details>
+
           {errors.length > 0 ? (
             <div className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">
-              <p className="font-semibold">Import errors</p>
-              <ul className="mt-2 list-disc space-y-1 pl-5">
-                {errors.map((error, index) => (
-                  <li key={`${error.row}-${index}`}>
-                    Row {error.row}: {error.message}
-                  </li>
-                ))}
-              </ul>
+              <p className="font-semibold">Fix these issues</p>
+              {groupedErrors.headerErrors.length > 0 ? (
+                <ul className="mt-2 list-disc space-y-1 pl-5 text-xs">
+                  {groupedErrors.headerErrors.map((error, index) => (
+                    <li key={`header-${error.row}-${index}`}>
+                      Row {error.row}: {error.message}
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+              {groupedErrors.rowErrors.length > 0 ? (
+                <ul className="mt-2 list-disc space-y-1 pl-5 text-xs">
+                  {groupedErrors.rowErrors.map((error, index) => (
+                    <li key={`row-${error.row}-${index}`}>
+                      Row {error.row}: {error.message}
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
             </div>
           ) : null}
         </div>
       </section>
 
+      {/* ── Prompt generator (collapsed by default) ── */}
       <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-        <h2 className="text-lg font-semibold text-slate-900">CSV Prompt Helper</h2>
-        <p className="mt-2 text-sm text-slate-600">Fill values, copy prompt, then paste to your LLM.</p>
+        <details className="group">
+          <summary className="cursor-pointer text-base font-semibold text-slate-900 group-open:mb-4">
+            Generate a word list with AI
+          </summary>
 
-        <div className="mt-4 grid gap-3 sm:grid-cols-2">
-          <label className="text-sm text-slate-700">
-            Number
-            <input
-              value={numberValue}
-              onChange={(event) => setNumberValue(event.target.value)}
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
-            />
-          </label>
-          <label className="text-sm text-slate-700">
-            Topic
-            <input
-              value={topicValue}
-              onChange={(event) => setTopicValue(event.target.value)}
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
-            />
-          </label>
-        </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <label className="text-sm text-slate-600">
+              Words
+              <input
+                value={numberValue}
+                onChange={(event) => setNumberValue(event.target.value)}
+                className="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:border-slate-400 focus:ring-1 focus:ring-slate-300"
+              />
+            </label>
+            <label className="text-sm text-slate-600">
+              Topic
+              <input
+                value={topicValue}
+                onChange={(event) => setTopicValue(event.target.value)}
+                className="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:border-slate-400 focus:ring-1 focus:ring-slate-300"
+              />
+            </label>
+          </div>
 
-        <pre className="mt-4 max-h-64 overflow-auto rounded-xl bg-slate-950 p-3 text-xs text-slate-100">{promptText}</pre>
-        <div className="mt-3 flex items-center gap-3">
-          <button
-            type="button"
-            className="rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
-            onClick={handleCopyPrompt}
-          >
-            Copy prompt
-          </button>
-          {copyStatus === 'copied' ? <span className="text-sm text-emerald-700">Copied.</span> : null}
-          {copyStatus === 'failed' ? <span className="text-sm text-rose-700">Copy failed.</span> : null}
-        </div>
+          <pre className="mt-4 max-h-48 overflow-auto rounded-xl bg-slate-950 p-3 text-xs leading-relaxed text-slate-200">{promptText}</pre>
+          <div className="mt-3 flex items-center gap-3">
+            <button
+              type="button"
+              className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600 transition hover:bg-slate-50"
+              onClick={handleCopyPrompt}
+            >
+              Copy prompt
+            </button>
+            {copyStatus === 'copied' ? <span className="text-sm text-slate-500">Copied</span> : null}
+            {copyStatus === 'failed' ? <span className="text-sm text-rose-600">Copy failed</span> : null}
+          </div>
+        </details>
       </section>
 
       <ConfirmModal

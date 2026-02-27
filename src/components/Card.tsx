@@ -16,7 +16,7 @@ export default function Card({ card, flipped, isMemorized, frontMode }: CardProp
       <article className={shell}>
         <header className="flex items-center justify-between text-xs font-medium text-slate-500">
           <span>#{card.id}</span>
-          {isMemorized ? <span className="rounded-full bg-emerald-100 px-2 py-1 text-emerald-700">Memorized</span> : null}
+          {isMemorized ? <span className="rounded-full bg-slate-800 px-2 py-1 text-white">Memorized</span> : null}
         </header>
         <div className="flex flex-1 items-center justify-center px-5 text-center">
           <p className="text-5xl font-medium leading-tight text-slate-900 sm:text-6xl">{frontText}</p>
@@ -32,7 +32,7 @@ export default function Card({ card, flipped, isMemorized, frontMode }: CardProp
     <article className={shell}>
       <header className="flex items-center justify-between text-xs font-medium text-slate-500">
         <span>#{card.id}</span>
-        {isMemorized ? <span className="rounded-full bg-emerald-100 px-2 py-1 text-emerald-700">Memorized</span> : null}
+        {isMemorized ? <span className="rounded-full bg-slate-800 px-2 py-1 text-white">Memorized</span> : null}
       </header>
 
       <div className="flex flex-1 flex-col items-center justify-center gap-6">
