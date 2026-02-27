@@ -1,7 +1,14 @@
 # Plans TODO
 
 ## Active
-- v1 draft is complete and visually polished. Ready for deployment or next phase work.
+- Hosting phase is active: GitHub Pages deployment for `favrei/meet_vocab`.
+
+## Hosting Progress (2026-02-27)
+- Added deploy workflow: `.github/workflows/deploy.yml`.
+- Set Vite production base path to `/meet_vocab/` in `vite.config.ts`.
+- Added hosting notes to `README.md`.
+- Verified locally: `npm test` (15 pass), `npm run build` success.
+- Remaining: commit/push to `main`, confirm Pages setting, verify live URL.
 
 ## Recently Applied
 - Rebalanced card back layout: content (meaning, pronunciation, example, tags) grouped as a single vertically-centered cluster instead of spread with `justify-between`.
@@ -21,4 +28,4 @@
 - Fullscreen toggle is deferred.
 
 ## Next Phase (After Draft)
-- GitHub Pages deployment setup/release.
+- Validate live deployment and capture release notes.

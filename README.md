@@ -66,3 +66,9 @@ Paste that into the app and you're studying.
 ```sh
 npm install && npm run dev
 ```
+
+## Hosting (GitHub Pages)
+
+- Repo: `git@github.com:favrei/meet_vocab.git`
+- Production URL: `https://favrei.github.io/meet_vocab/`
+- Deploy: push to `main` (workflow: `.github/workflows/deploy.yml`)
