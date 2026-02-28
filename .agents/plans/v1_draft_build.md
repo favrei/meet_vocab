@@ -34,7 +34,7 @@ POC is validated by friends. Goal: scaffold the real project and get a working d
 
 ## Directory Layout
 ```
-meet_vocab/
+date-a-lingo/
 ├── index.html
 ├── package.json
 ├── tsconfig.json

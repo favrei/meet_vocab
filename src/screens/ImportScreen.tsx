@@ -107,7 +107,7 @@ export default function ImportScreen({ existingDeck, onImportSuccess }: ImportSc
       {/* ── Hero: demo video front and center ── */}
       <section className="relative overflow-hidden rounded-3xl bg-slate-900 shadow-2xl">
         <div className="relative z-10 px-5 pt-5 pb-1">
-          <p className="text-center text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">Meet Vocab</p>
+          <p className="text-center text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">Date-a-Lingo</p>
         </div>
         <div className="relative z-10 px-4 pb-5 sm:px-6">
           <video

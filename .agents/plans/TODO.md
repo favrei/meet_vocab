@@ -6,13 +6,13 @@
 
 ## Hosting Progress (2026-02-27)
 - Added deploy workflow: `.github/workflows/deploy.yml`.
-- Set Vite production base path to `/meet_vocab/` in `vite.config.ts`.
+- Set Vite production base path to `/date-a-lingo/` in `vite.config.ts`.
 - Added hosting notes to `README.md`.
 - Verified locally: `npm test` (15 pass), `npm run build` success.
 - First Actions run failed because Pages site was not enabled yet; patched workflow with `enablement: true`.
 - Second Actions run also failed because workflow token lacks permission to create initial Pages site.
 - Created and pushed manual publish branch `deploy` with static build output.
-- Manual branch deployment is live at `https://favrei.github.io/meet_vocab/`.
+- Manual branch deployment is live at `https://favrei.github.io/date-a-lingo/`.
 - Current production branch head: `deploy` @ `81d24b7` (from `main` @ `4f9b57f`).
 
 ## Recently Applied

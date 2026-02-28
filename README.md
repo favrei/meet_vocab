@@ -1,6 +1,6 @@
-# Meet Vocab
+# Date-a-Lingo
 
-Live site: [https://favrei.github.io/meet_vocab/](https://favrei.github.io/meet_vocab/)
+Live site: [https://favrei.github.io/date-a-lingo/](https://favrei.github.io/date-a-lingo/)
 
 Ask any LLM for Japanese words. Swipe to memorize them.
 
@@ -71,6 +71,6 @@ npm install && npm run dev
 
 ## Hosting (GitHub Pages)
 
-- Repo: `git@github.com:favrei/meet_vocab.git`
-- Production URL: `https://favrei.github.io/meet_vocab/`
+- Repo: `git@github.com:favrei/date-a-lingo.git`
+- Production URL: `https://favrei.github.io/date-a-lingo/`
 - Deploy: push to `main` (workflow: `.github/workflows/deploy.yml`)
