@@ -39,7 +39,6 @@ date-a-lingo/
 ├── package.json
 ├── tsconfig.json
 ├── vite.config.ts
-├── tailwind.config.ts          # if needed by v4
 ├── src/
 │   ├── main.tsx                # ReactDOM entry
 │   ├── App.tsx                 # state machine: import | deck
@@ -55,9 +54,9 @@ date-a-lingo/
 │   │   ├── Card.tsx            # front + back face
 │   │   ├── SwipeDeck.tsx       # drag/swipe gesture wrapper
 │   │   ├── Sheet.tsx           # bottom sheet (options)
-│   │   ├── ProgressBar.tsx
 │   │   ├── Pill.tsx
-│   │   └── ConfirmModal.tsx    # inline "replace deck?" confirmation
+│   │   ├── ConfirmModal.tsx    # inline "replace deck?" confirmation
+│   │   └── PromptGenerator.tsx # collapsible AI prompt with number/topic inputs
 │   └── index.css               # Tailwind directives
 ├── tests/
 │   ├── csv.test.ts
@@ -117,7 +116,7 @@ Port the POC's rendering and gesture logic into proper components:
 - Swipe semantics: right swipe keeps card (advance), left swipe marks memorized (drop).
 - Renders next-card preview behind.
 
-**`src/components/Sheet.tsx`, `ProgressBar.tsx`, `Pill.tsx`**
+**`src/components/Sheet.tsx`, `Pill.tsx`**
 - Direct port from POC, converted to TypeScript with props.
 
 **`src/screens/DeckScreen.tsx`**
@@ -156,11 +155,14 @@ Port the POC's rendering and gesture logic into proper components:
 - Run `npm run build` — no errors.
 - Manual smoke test via `npm run dev`.
 
-## Deferred (not in this draft)
-- GitHub Pages deployment config.
+## Deferred
 - Fullscreen toggle (from POC).
-- Landing page (per `landing_page_spec.md` — optional for v1).
 - PWA / offline support.
+
+## Shipped Since Draft
+- GitHub Pages deployment (branch-based manual publish from `deploy` branch).
+- Landing/import UX overhaul: hero section with walkthrough video, CTA strip, sample-first path.
+- App rebranded to **Date-a-Lingo**.
 
 ## Verification
 1. `npm run dev` → opens import screen.

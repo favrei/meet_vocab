@@ -47,6 +47,12 @@ Rules:
 - Use standard CSV quoting if a field contains commas.
 - Every row must have id, jp, hira, en, example, and translation filled.
 - Generate [NUMBER] words about [TOPIC].
+
+Example output (3 rows):
+id,jp,hira,en,example,translation,romaji,zh,cat
+1,猫,ねこ,cat,猫が好きです,I like cats,neko,猫,noun
+2,犬,いぬ,dog,犬と散歩します,I walk with my dog,inu,狗,noun
+3,鳥,とり,bird,鳥が空を飛んでいます,A bird is flying in the sky,tori,鸟,noun
 ```
 
 ### Prompt Principle

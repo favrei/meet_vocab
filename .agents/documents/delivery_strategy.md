@@ -3,9 +3,9 @@
 ## Objective
 Ship a polished v1 of the validated POC, replacing hardcoded data with CSV import.
 
-## Current Milestone
-- This draft milestone targets local playability only.
-- GitHub Pages deployment is explicitly deferred to the next phase.
+## Current Status
+- All v1 phases (including hosting) are complete.
+- App is branded as **Date-a-Lingo** and live on GitHub Pages.
 
 ## Architecture
 - 100% client-side. 0 server, 0 API calls.
@@ -26,7 +26,7 @@ Ship a polished v1 of the validated POC, replacing hardcoded data with CSV impor
 - POC already validated by friends — interaction model is confirmed.
 - No new service will be built. This app *is* the product.
 
-## Phases
+## Phases (all complete)
 1. Lock card protocol and import contract.
 2. Scaffold project (Vite + React 19 + TypeScript + Tailwind v4 + Motion + Vitest).
 3. Port POC swipe flow into proper components.
@@ -34,11 +34,11 @@ Ship a polished v1 of the validated POC, replacing hardcoded data with CSV impor
 5. Add copy-ready LLM prompt for CSV generation.
 6. Add tests, QA, and GH Pages release.
 
-## Done Means
+## Done Means (all met)
 - Core swipe loop works on smartphone, tablet, and desktop (matching POC behavior).
 - CSV import works for paste and file upload.
 - Invalid CSV shows clear row-level errors.
-- LLM prompt is accessible in the app.
+- LLM prompt is accessible in the app (collapsible "Generate a word list with AI" section).
 - No backend required.
-- GH Pages deployment is live.
-- All tests pass headlessly via CLI (`npm test` or equivalent).
+- GH Pages deployment is live at `https://favrei.github.io/date-a-lingo/`.
+- All tests pass headlessly via CLI (`npm test`).

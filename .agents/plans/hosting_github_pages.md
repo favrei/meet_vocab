@@ -63,7 +63,7 @@ Deploy `date-a-lingo` to GitHub Pages from this same repo, with automatic deploy
   - files: `index.html`, `assets/*`, `.nojekyll`
 - Source branch remains `main` for app development; `deploy` is publish-only.
 - Branch has continued to be updated from `main` for each production release.
-- Latest verified deploy at time of writing: `deploy` @ `81d24b7` from `main` @ `4f9b57f`.
+- Current `main` HEAD: `0135d23` (rebrand app to Date-a-Lingo).
 
 ## Acceptance Criteria
 - Pages workflow runs successfully on `main`.

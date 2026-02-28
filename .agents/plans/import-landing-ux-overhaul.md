@@ -124,6 +124,4 @@
 - The page feels welcoming rather than technical.
 
 ## Risks / dependencies
-- This repository currently appears to contain built static assets only.
-- To implement cleanly, we likely need the source files (components/styles) rather than editing minified bundles.
-- If source is unavailable, we can still patch built files, but it will be slower and harder to maintain.
+- No outstanding blockers. Full source is available in `src/`.
