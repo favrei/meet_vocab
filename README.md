@@ -61,7 +61,7 @@ Paste that into the app and you're studying.
 - **Front mode** — Show Japanese or English on the front of the card
 - **Hide memorized** — Memorized cards leave the deck (on by default)
 - **Re-shuffle / Restart / Reset** — Remix the deck however you want
-- **Import new deck** — Swap in a different set of words anytime
+- **Start new deck (delete progress)** — Clear current deck/progress and return to home import
 
 ## Development
 

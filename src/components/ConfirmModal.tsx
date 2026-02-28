@@ -1,11 +1,13 @@
+import type { ReactNode } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 
 type ConfirmModalProps = {
   open: boolean
   title: string
-  message: string
+  message: ReactNode
   confirmLabel: string
   cancelLabel?: string
+  variant?: 'destructive'
   onConfirm: () => void
   onCancel: () => void
 }
@@ -16,6 +18,7 @@ export default function ConfirmModal({
   message,
   confirmLabel,
   cancelLabel = 'Cancel',
+  variant,
   onConfirm,
   onCancel,
 }: ConfirmModalProps) {
@@ -40,7 +43,7 @@ export default function ConfirmModal({
             aria-label={title}
           >
             <h2 className="text-lg font-semibold text-slate-900">{title}</h2>
-            <p className="mt-2 text-sm text-slate-600">{message}</p>
+            <div className="mt-2 text-sm text-slate-600">{message}</div>
             <div className="mt-5 flex justify-end gap-2">
               <button
                 type="button"
@@ -52,7 +55,7 @@ export default function ConfirmModal({
               <button
                 type="button"
                 onClick={onConfirm}
-                className="rounded-lg bg-slate-900 px-3 py-2 text-sm text-white hover:bg-slate-700"
+                className={`rounded-lg px-3 py-2 text-sm text-white ${variant === 'destructive' ? 'bg-rose-600 hover:bg-rose-700' : 'bg-slate-900 hover:bg-slate-700'}`}
               >
                 {confirmLabel}
               </button>

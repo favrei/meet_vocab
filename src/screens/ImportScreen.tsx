@@ -1,5 +1,4 @@
 import { useMemo, useRef, useState, type ChangeEvent } from 'react'
-import ConfirmModal from '../components/ConfirmModal'
 import PromptGenerator from '../components/PromptGenerator'
 import { parseCSV } from '../lib/csv'
 import { createInitialDeckState, generateSeed } from '../lib/deck'
@@ -7,7 +6,6 @@ import { saveDeck, saveDeckState, saveFrontMode } from '../lib/storage'
 import type { VocabCard } from '../types'
 
 type ImportScreenProps = {
-  existingDeck: boolean
   onImportSuccess: (cards: VocabCard[]) => void
 }
 
@@ -16,14 +14,40 @@ const EXAMPLE_CSV = `id,jp,hira,en,example,translation,romaji,zh,cat
 2,犬,いぬ,dog,犬と散歩します,I walk with my dog,inu,狗,noun
 3,鳥,とり,bird,鳥が空を飛んでいます,A bird is flying in the sky,tori,鸟,noun
 4,魚,さかな,fish,魚を食べました,I ate fish,sakana,鱼,noun
-5,馬,うま,horse,馬に乗りたいです,I want to ride a horse,uma,马,noun`
+5,馬,うま,horse,馬に乗りたいです,I want to ride a horse,uma,马,noun
+6,食べる,たべる,to eat,朝ごはんを食べる,I eat breakfast,taberu,吃,verb
+7,飲む,のむ,to drink,水を飲む,I drink water,nomu,喝,verb
+8,走る,はしる,to run,公園で走る,I run in the park,hashiru,跑,verb
+9,書く,かく,to write,手紙を書く,I write a letter,kaku,写,verb
+10,読む,よむ,to read,本を読む,I read a book,yomu,读,verb
+11,大きい,おおきい,big,大きい木がある,There is a big tree,ookii,大的,adjective
+12,小さい,ちいさい,small,小さい花が咲いた,A small flower bloomed,chiisai,小的,adjective
+13,新しい,あたらしい,new,新しい靴を買った,I bought new shoes,atarashii,新的,adjective
+14,水,みず,water,水がおいしい,The water is delicious,mizu,水,noun
+15,山,やま,mountain,山に登る,I climb the mountain,yama,山,noun
+16,花,はな,flower,花が咲いている,Flowers are blooming,hana,花,noun
+17,友達,ともだち,friend,友達と遊ぶ,I hang out with friends,tomodachi,朋友,noun
+18,先生,せんせい,teacher,先生に聞く,I ask the teacher,sensei,老师,noun
+19,学生,がくせい,student,学生が勉強する,The student studies,gakusei,学生,noun
+20,天気,てんき,weather,今日は天気がいい,The weather is nice today,tenki,天气,noun
+21,買う,かう,to buy,野菜を買う,I buy vegetables,kau,买,verb
+22,作る,つくる,to make,料理を作る,I make a meal,tsukuru,做,verb
+23,楽しい,たのしい,fun,旅行は楽しい,Traveling is fun,tanoshii,快乐的,adjective
+24,美味しい,おいしい,delicious,この料理は美味しい,This dish is delicious,oishii,好吃的,adjective
+25,空,そら,sky,空が青い,The sky is blue,sora,天空,noun`
 
-export default function ImportScreen({ existingDeck, onImportSuccess }: ImportScreenProps) {
-  const importSectionRef = useRef<HTMLElement | null>(null)
+function StepBadge({ step }: { step: number }) {
+  return (
+    <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-900 text-xs font-bold text-white">
+      {step}
+    </span>
+  )
+}
+
+export default function ImportScreen({ onImportSuccess }: ImportScreenProps) {
+  const step1Ref = useRef<HTMLElement | null>(null)
   const [rawInput, setRawInput] = useState('')
   const [errors, setErrors] = useState<{ row: number; message: string }[]>([])
-  const [confirmOpen, setConfirmOpen] = useState(false)
-  const [pendingCards, setPendingCards] = useState<VocabCard[] | null>(null)
 
   const groupedErrors = useMemo(() => {
     const headerRegex = /header/i
@@ -64,12 +88,6 @@ export default function ImportScreen({ existingDeck, onImportSuccess }: ImportSc
 
     setErrors([])
 
-    if (existingDeck) {
-      setPendingCards(result.cards)
-      setConfirmOpen(true)
-      return
-    }
-
     persistAndContinue(result.cards)
   }
 
@@ -98,8 +116,8 @@ export default function ImportScreen({ existingDeck, onImportSuccess }: ImportSc
     parseAndImport(EXAMPLE_CSV)
   }
 
-  const handleScrollToImport = () => {
-    importSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  const handleScrollToStep1 = () => {
+    step1Ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
   return (
@@ -143,20 +161,34 @@ export default function ImportScreen({ existingDeck, onImportSuccess }: ImportSc
         <button
           type="button"
           className="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 hover:shadow-md active:scale-[0.98]"
-          onClick={handleScrollToImport}
+          onClick={handleScrollToStep1}
         >
-          Import my CSV
+          Create your deck
         </button>
       </section>
 
       <p className="mt-3 text-center text-xs text-slate-400">No account needed. Everything stays in your browser.</p>
 
-      {/* ── Import form ── */}
+      {/* ── Step 1: Generate prompt ── */}
       <section
-        ref={importSectionRef}
+        ref={step1Ref}
         className="mt-10 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
       >
-        <h2 className="text-base font-semibold text-slate-900">Import your word list</h2>
+        <h2 className="flex items-center gap-2.5 text-base font-semibold text-slate-900">
+          <StepBadge step={1} />
+          Generate your word list with AI
+        </h2>
+        <div className="mt-4">
+          <PromptGenerator />
+        </div>
+      </section>
+
+      {/* ── Step 2: Paste & import ── */}
+      <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <h2 className="flex items-center gap-2.5 text-base font-semibold text-slate-900">
+          <StepBadge step={2} />
+          Paste &amp; import your CSV
+        </h2>
         <div className="mt-4 space-y-3">
           <textarea
             id="csv-paste"
@@ -219,25 +251,17 @@ export default function ImportScreen({ existingDeck, onImportSuccess }: ImportSc
         </div>
       </section>
 
-      <PromptGenerator />
+      {/* ── Step 3: Start learning ── */}
+      <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <h2 className="flex items-center gap-2.5 text-base font-semibold text-slate-900">
+          <StepBadge step={3} />
+          Start learning
+        </h2>
+        <p className="mt-2 text-sm text-slate-500">
+          Swipe right if you know the word, left if you don't. Cards you miss come back more often. Tap a card to flip it.
+        </p>
+      </section>
 
-      <ConfirmModal
-        open={confirmOpen}
-        title="Replace current deck?"
-        message="This will replace your current deck and reset progress. Continue?"
-        confirmLabel="Replace deck"
-        onCancel={() => {
-          setConfirmOpen(false)
-          setPendingCards(null)
-        }}
-        onConfirm={() => {
-          if (pendingCards) {
-            persistAndContinue(pendingCards)
-          }
-          setConfirmOpen(false)
-          setPendingCards(null)
-        }}
-      />
     </main>
   )
 }

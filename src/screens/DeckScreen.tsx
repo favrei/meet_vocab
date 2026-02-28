@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { ArrowRight, Check, Settings2 } from 'lucide-react'
+import ConfirmModal from '../components/ConfirmModal'
 import Pill from '../components/Pill'
 import Sheet from '../components/Sheet'
 import SwipeDeck from '../components/SwipeDeck'
@@ -35,6 +36,7 @@ export default function DeckScreen({ cards, onImportNewDeck }: DeckScreenProps) 
   const [frontMode, setFrontMode] = useState<FrontMode>(() => loadFrontMode() ?? 'jp')
   const [flipped, setFlipped] = useState(false)
   const [sheetOpen, setSheetOpen] = useState(false)
+  const [startNewDeckConfirmOpen, setStartNewDeckConfirmOpen] = useState(false)
 
   useEffect(() => {
     setDeckState((current) => clampCursor(current, cards))
@@ -140,7 +142,7 @@ export default function DeckScreen({ cards, onImportNewDeck }: DeckScreenProps) 
             <div className="w-full max-w-xl rounded-2xl border border-slate-200 bg-white p-7 text-center shadow-sm">
               <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">Deck Complete</p>
               <h2 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900">No cards left in active deck</h2>
-              <p className="mt-3 text-sm text-slate-600">All cards are memorized. Restart, reset, or import a new deck.</p>
+              <p className="mt-3 text-sm text-slate-600">All cards are memorized. Restart, reset, or start a new deck.</p>
               <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
                 <Pill onClick={() => applyDeckAction((state) => restartSameOrder(state, cards))}>
                   Restart
@@ -207,14 +209,27 @@ export default function DeckScreen({ cards, onImportNewDeck }: DeckScreenProps) 
             type="button"
             onClick={() => {
               setSheetOpen(false)
-              onImportNewDeck()
+              setStartNewDeckConfirmOpen(true)
             }}
-            className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
+            className="w-full rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700 hover:bg-rose-100"
           >
-            Import new deck
+            Start new deck (delete progress)
           </button>
         </div>
       </Sheet>
+
+      <ConfirmModal
+        open={startNewDeckConfirmOpen}
+        title="Start a new deck?"
+        message="This deletes your current deck and memorized progress, then returns to the home page."
+        confirmLabel="Delete progress & continue"
+        variant="destructive"
+        onCancel={() => setStartNewDeckConfirmOpen(false)}
+        onConfirm={() => {
+          setStartNewDeckConfirmOpen(false)
+          onImportNewDeck()
+        }}
+      />
     </main>
   )
 }

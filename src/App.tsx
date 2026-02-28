@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import ImportScreen from './screens/ImportScreen'
 import DeckScreen from './screens/DeckScreen'
-import { loadDeck } from './lib/storage'
+import { clearAll, loadDeck } from './lib/storage'
 import type { VocabCard } from './types'
 
 type Screen = 'import' | 'deck'
@@ -30,10 +30,11 @@ export default function App() {
       <DeckScreen
         cards={cards}
         onImportNewDeck={() => {
-          setAppState((current) => ({
-            ...current,
+          clearAll()
+          setAppState({
+            cards: null,
             screen: 'import',
-          }))
+          })
         }}
       />
     )
@@ -41,7 +42,6 @@ export default function App() {
 
   return (
     <ImportScreen
-      existingDeck={hasDeck}
       onImportSuccess={(nextCards) => {
         setAppState({
           cards: nextCards,
