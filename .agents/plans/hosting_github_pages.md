@@ -22,21 +22,13 @@ Deploy `date-a-lingo` to GitHub Pages from this same repo, with automatic deploy
    - manual deploy branch mode.
 6. Validate public URL.
 
-## Status (2026-02-27)
+## Status
 - `origin` remote configured to `git@github.com:favrei/date-a-lingo.git` ✅
-- GitHub Pages workflow added at `.github/workflows/deploy.yml` ✅
 - Vite production base path configured in `vite.config.ts` ✅
 - README hosting section added ✅
-- Local verification passed:
-  - `npm test` (15/15 passing) ✅
-  - `npm run build` (production build success) ✅
-- First workflow run triggered after push (`run #1`) but failed at `Configure GitHub Pages` because Pages site was not initialized yet (`Get Pages site failed: Not Found`) ✅ diagnosed
-- Workflow updated to include `enablement: true` in `actions/configure-pages@v5` to auto-enable Pages on first deploy ✅
+- GitHub Actions workflow was attempted but removed (see blocker below).
 
 ## Changes Applied
-- `.github/workflows/deploy.yml`
-  - Trigger: push to `main` + manual dispatch.
-  - Jobs: build (`npm ci`, `npm run build`, upload artifact) and deploy (`actions/deploy-pages`).
 - `vite.config.ts`
   - Production base path set to `/date-a-lingo/`.
 - `README.md`
@@ -48,14 +40,10 @@ Deploy `date-a-lingo` to GitHub Pages from this same repo, with automatic deploy
 3. Live URL is active:
    - `https://favrei.github.io/date-a-lingo/`
 
-## Current Blocker (2026-02-27)
+## GitHub Actions Blocker (historical)
 - Workflow runs `#1` and `#2` failed at `Configure GitHub Pages` before build steps.
-- Root cause: Actions token cannot create initial Pages site (`Create Pages site failed: Resource not accessible by integration`).
-- Evidence:
-  - Run #1: `https://github.com/favrei/date-a-lingo/actions/runs/22468686356`
-  - Run #2: `https://github.com/favrei/date-a-lingo/actions/runs/22468715398`
-- API check for Pages site currently returns `404 Not Found`:
-  - `GET https://api.github.com/repos/favrei/date-a-lingo/pages`
+- Root cause: Actions token cannot create initial Pages site.
+- Workflow file (`.github/workflows/deploy.yml`) was removed since manual deploy works fine.
 
 ## Manual Deploy Branch Outcome (2026-02-27)
 - Created and pushed a dedicated `deploy` branch containing static build output at repo root:
@@ -66,6 +54,5 @@ Deploy `date-a-lingo` to GitHub Pages from this same repo, with automatic deploy
 - Current `main` HEAD: `0135d23` (rebrand app to Date-a-Lingo).
 
 ## Acceptance Criteria
-- Pages workflow runs successfully on `main`.
-- App loads at `/date-a-lingo/` with assets resolving correctly.
-- No test/build regressions from hosting changes.
+- App loads at `/date-a-lingo/` with assets resolving correctly. ✅
+- No test/build regressions from hosting changes. ✅

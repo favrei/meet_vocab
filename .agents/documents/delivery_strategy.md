@@ -7,6 +7,14 @@ Ship a polished v1 of the validated POC, replacing hardcoded data with CSV impor
 - All v1 phases (including hosting) are complete.
 - App is branded as **Date-a-Lingo** and live on GitHub Pages.
 
+## Hosting
+- Live at `https://favrei.github.io/date-a-lingo/`.
+- Deployment mode: manual build + push to `deploy` branch.
+- `deploy` branch contains static build output at repo root (`index.html`, `assets/*`, `.nojekyll`).
+- Vite production `base` set to `/date-a-lingo/` in `vite.config.ts`.
+- No CI/CD — workflow was removed after GitHub Actions failed to provision Pages automatically.
+- See `plans/hosting_github_pages.md` for full history.
+
 ## Architecture
 - 100% client-side. 0 server, 0 API calls.
 - All persistence via localStorage.
@@ -42,3 +50,10 @@ Ship a polished v1 of the validated POC, replacing hardcoded data with CSV impor
 - No backend required.
 - GH Pages deployment is live at `https://favrei.github.io/date-a-lingo/`.
 - All tests pass headlessly via CLI (`npm test`).
+
+## Decisions Locked
+- JS package manager: `npm`.
+- Swipe semantics: right = keep, left = memorized/drop.
+- CSV import accepts reordered columns by header name.
+- Import UI includes textarea paste + file picker upload.
+- Fullscreen toggle is deferred.
