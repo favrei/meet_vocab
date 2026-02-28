@@ -74,8 +74,8 @@ export default function SwipeDeck({
   }
 
   return (
-    <div className="mx-auto w-full max-w-[30rem]">
-      <div className="relative isolate h-[min(60svh,32rem)] min-h-[22rem] sm:h-[min(72vh,40rem)] sm:min-h-[30rem]">
+    <div className="mx-auto h-full w-full max-w-[30rem] sm:h-auto">
+      <div className="relative isolate h-full min-h-0 sm:h-[min(72vh,40rem)] sm:min-h-[30rem]">
         {backdropCard ? (
           <motion.div
             key={backdropCard.id}

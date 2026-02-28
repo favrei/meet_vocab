@@ -84,8 +84,8 @@ export default function DeckScreen({ cards, onImportNewDeck }: DeckScreenProps) 
   }
 
   return (
-    <main className="mx-auto flex min-h-[100svh] w-full max-w-5xl items-start justify-center px-3 py-4 sm:min-h-screen sm:items-center sm:px-6 sm:py-6">
-      <section className="relative w-full pt-1">
+    <main className="mx-auto flex h-[100dvh] w-full max-w-5xl items-stretch justify-center overflow-hidden px-3 [padding-bottom:calc(env(safe-area-inset-bottom)+0.5rem)] [padding-top:calc(env(safe-area-inset-top)+0.5rem)] sm:h-auto sm:min-h-screen sm:items-center sm:px-6 sm:py-6">
+      <section className="relative flex w-full flex-1 flex-col pt-11 sm:flex-none sm:pt-1">
         <div className="pointer-events-none absolute left-1/2 top-0 z-20 -translate-x-1/2 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-700 shadow-sm">
           {memorizedCount}/{cards.length}
         </div>
@@ -99,18 +99,20 @@ export default function DeckScreen({ cards, onImportNewDeck }: DeckScreenProps) 
         </button>
 
         {!done ? (
-          <>
-            <SwipeDeck
-              currentCard={currentCard}
-              nextCard={nextCard}
-              frontMode={frontMode}
-              isMemorized={currentCard ? deckState.memorized.has(currentCard.id) : false}
-              flipped={flipped}
-              onFlip={() => setFlipped((current) => !current)}
-              onSwipe={handleSwipe}
-            />
+          <div className="flex min-h-0 flex-1 flex-col sm:flex-none">
+            <div className="min-h-0 flex-1 sm:flex-none">
+              <SwipeDeck
+                currentCard={currentCard}
+                nextCard={nextCard}
+                frontMode={frontMode}
+                isMemorized={currentCard ? deckState.memorized.has(currentCard.id) : false}
+                flipped={flipped}
+                onFlip={() => setFlipped((current) => !current)}
+                onSwipe={handleSwipe}
+              />
+            </div>
 
-            <div className="mx-auto mt-3 flex w-full max-w-[30rem] items-center gap-2 sm:mt-4 sm:gap-3">
+            <div className="mx-auto mt-3 flex w-full max-w-[30rem] items-center gap-2 pb-1 sm:mt-4 sm:gap-3 sm:pb-0">
               <button
                 type="button"
                 onClick={() => handleSwipe('left')}
@@ -132,22 +134,24 @@ export default function DeckScreen({ cards, onImportNewDeck }: DeckScreenProps) 
                 <ArrowRight className="h-4 w-4" />
               </button>
             </div>
-          </>
+          </div>
         ) : (
-          <section className="mx-auto mt-10 w-full max-w-xl rounded-2xl border border-slate-200 bg-white p-7 text-center shadow-sm">
-            <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">Deck Complete</p>
-            <h2 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900">No cards left in active deck</h2>
-            <p className="mt-3 text-sm text-slate-600">All cards are memorized. Restart, reset, or import a new deck.</p>
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
-              <Pill onClick={() => applyDeckAction((state) => restartSameOrder(state, cards))}>
-                Restart
-              </Pill>
-              <Pill onClick={() => applyDeckAction((state) => reshuffle(state, generateSeed()))}>
-                Re-shuffle
-              </Pill>
-              <Pill onClick={() => applyDeckAction((state) => resetMemorized(state))}>
-                Reset memorized
-              </Pill>
+          <section className="mx-auto flex w-full flex-1 items-center justify-center sm:mt-10 sm:flex-none">
+            <div className="w-full max-w-xl rounded-2xl border border-slate-200 bg-white p-7 text-center shadow-sm">
+              <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">Deck Complete</p>
+              <h2 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900">No cards left in active deck</h2>
+              <p className="mt-3 text-sm text-slate-600">All cards are memorized. Restart, reset, or import a new deck.</p>
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+                <Pill onClick={() => applyDeckAction((state) => restartSameOrder(state, cards))}>
+                  Restart
+                </Pill>
+                <Pill onClick={() => applyDeckAction((state) => reshuffle(state, generateSeed()))}>
+                  Re-shuffle
+                </Pill>
+                <Pill onClick={() => applyDeckAction((state) => resetMemorized(state))}>
+                  Reset memorized
+                </Pill>
+              </div>
             </div>
           </section>
         )}
